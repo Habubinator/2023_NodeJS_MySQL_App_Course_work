@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="ua">
+<head>
+    <meta charset="UTF-8">
+    <title>league Database course work by Yevheniiy Hoodimenko</title>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
+    <style>
+        .align {
+            -webkit-box-align: center;
+            -ms-flex-align: center;
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-orient: vertical;
+            -webkit-box-direction: normal;
+            -ms-flex-direction: column;
+            flex-direction: column;
+            -webkit-box-pack: center;
+            -ms-flex-pack: center;
+        }
+
+        .grid {
+            margin-left: auto;
+            margin-right: auto;
+            max-width: 320px;
+            max-width: 20rem;
+            width: 90%;
+            justify-content: center
+        }
+
+        .hidden {
+            border: 0;
+            clip: rect(0 0 0 0);
+            height: 1px;
+            margin: -1px;
+            overflow: hidden;
+            padding: 0;
+            position: absolute;
+            width: 1px
+        }
+
+        .icons {
+            display: none
+        }
+
+        .icon {
+            display: inline-block;
+            fill: #606468;
+            font-size: 16px;
+            font-size: 1rem;
+            height: 1em;
+            vertical-align: middle;
+            width: 1em
+        }
+
+        * {
+            -webkit-box-sizing: inherit;
+            box-sizing: inherit
+        }
+
+        html {
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            font-size: 100%;
+            height: 100%
+        }
+
+        body {
+            background-color: #2c3338;
+            color: #606468;
+            font-family: open sans,sans-serif;
+            font-size: 14px;
+            font-size: .875rem;
+            font-weight: 400;
+            height: 100%;
+            line-height: 1.5;
+            margin: 0;
+            min-height: 100vh
+        }
+
+        a {
+            color: #eee;
+            outline: 0;
+            text-decoration: none
+        }
+
+            a:focus, a:hover {
+                text-decoration: underline
+            }
+
+        input {
+            background-image: none;
+            border: 0;
+            color: inherit;
+            font: inherit;
+            margin: 0;
+            outline: 0;
+            padding: 0;
+            -webkit-transition: background-color .3s;
+            transition: background-color .3s
+        }
+
+            input[type=button] {
+                cursor: pointer
+            }
+
+        .form {
+            margin: -14px;
+            margin: -.875rem
+        }
+
+            .form input[type=password], .form input[type=text], .form input[type=button] {
+                width: 100%
+            }
+
+        .form__field {
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            margin: 14px;
+            margin: .875rem
+        }
+
+        .form__input {
+            -webkit-box-flex: 1;
+            -ms-flex: 1;
+            flex: 1
+        }
+
+        .login {
+            color: #eee
+        }
+
+            .login label, .login input[type=text], .login input[type=password], .login input[type=button] {
+                border-radius: .25rem;
+                padding: 16px;
+                padding: 1rem
+            }
+
+            .login label {
+                background-color: #363b41;
+                border-bottom-right-radius: 0;
+                border-top-right-radius: 0;
+                padding-left: 20px;
+                padding-left: 1.25rem;
+                padding-right: 20px;
+                padding-right: 1.25rem
+            }
+
+            .login input[type=password], .login input[type=text] {
+                background-color: #3b4148;
+                border-bottom-left-radius: 0;
+                border-top-left-radius: 0
+            }
+
+                .login input[type=password]:focus, .login input[type=password]:hover, .login input[type=text]:focus, .login input[type=text]:hover {
+                    background-color: #434a52
+                }
+
+            .login input[type=button] {
+                background-color: #ea4c88;
+                color: #eee;
+                font-weight: 700;
+                text-transform: uppercase
+            }
+
+                .login input[type=button]:focus, .login input[type=button]:hover {
+                    background-color: #d44179
+                }
+
+        p {
+            margin-top: 24px;
+            margin-bottom: -10px;
+        }
+
+        .text--center {
+            text-align: center
+        }
+
+        section {
+            display: none;
+        }
+
+        #login_form {
+            display: block;
+        }
+
+        #registration_form, #login_form {
+            margin-top: 15%;
+        }
+
+        /*ДИЗАЙН ВНУТРИ*/
+
+        .wrapper {
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .tabs {
+            position: relative;
+            margin: 3rem 0;
+            background: #3b4148;
+            height: 14.75rem;
+        }
+
+            .tabs::before,
+            .tabs::after {
+                content: "";
+                display: table;
+            }
+
+            .tabs::after {
+                clear: both;
+            }
+
+        .tab {
+            float: left;
+        }
+
+        .tab-switch {
+            display: none;
+        }
+
+        .tab-label {
+            position: relative;
+            display: block;
+            line-height: 2.75em;
+            height: 3em;
+            padding: 0 1.618em;
+            background: #ea4c88;
+            border-right: 0.125rem solid #3b4148;
+            color: #fff;
+            cursor: pointer;
+            top: 0;
+            transition: all 0.25s;
+        }
+
+            .tab-label:hover {
+                top: -0.25rem;
+                transition: top 0.25s;
+            }
+
+        .tab-content {
+            height: 12rem;
+            position: absolute;
+            z-index: 1;
+            top: 2.75em;
+            left: 0;
+            padding: 1.618rem;
+            background: #fff;
+            color: #2c3e50;
+            border-bottom: 0.25rem solid #bdc3c7;
+            opacity: 0;
+            transition: all 0.35s;
+            width: 100%;
+            height: unset;
+            margin-bottom: 50px;
+        }
+
+        .tab-switch:checked + .tab-label {
+            background: #fff;
+            color: #2c3e50;
+            border-bottom: 0;
+            border-right: 0.125rem solid #fff;
+            transition: all 0.35s;
+            z-index: 1;
+            top: -0.0625rem;
+        }
+
+        .tab-switch:checked + label + .tab-content {
+            z-index: 2;
+            opacity: 1;
+            transition: all 0.35s;
+        }
+
+        #main_app {
+            align-items:normal;
+            margin-top: -50px;
+        }
+
+        button {
+            cursor: pointer;
+            border-radius: .25rem;
+            padding: 16px;
+            padding: 1rem;
+            background-color: #ea4c88;
+            color: #eee;
+            font-weight: 700;
+            text-transform: uppercase;
+            border-color: transparent;
+        }
+        td,th{
+            margin-right: 20px;
+        }
+
+        newWindowButton{
+            margin-top: 0;
+        }
+
+        .first_to_left{
+            margin-left: 30px;
+        }
+
+        /* ДИЗАЙН ТАБЛИЦ*/
+        
+        .container-table100 {
+            width: 100%;
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: -moz-box;
+            display: -ms-flexbox;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            padding: 10px 30px
+        }
+
+        .wrap-table100 {
+            width: 1170px
+        }
+
+        table {
+            border-spacing: 1;
+            border-collapse: collapse;
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            width: 100%;
+            margin: 0 auto;
+            position: relative
+        }
+
+            table * {
+                position: relative
+            }
+
+            table td, table th {
+                padding-left: 8px
+            }
+
+            table thead tr {
+                height: 60px;
+                background: #3b4148;
+                cursor: pointer;
+            }
+
+            table tbody tr {
+                height: 50px;
+            }
+
+                table tbody tr:last-child {
+                    border: 0
+                }
+
+            table td, table th {
+                text-align: left
+            }
+
+                table td.l, table th.l {
+                    text-align: right
+                }
+
+                table td.c, table th.c {
+                    text-align: center
+                }
+
+                table td.r, table th.r {
+                    text-align: center
+                }
+
+        .table100-head th {
+            font-family: OpenSans-Regular;
+            font-size: 18px;
+            color: #fff;
+            line-height: 1.2;
+            font-weight: unset
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f5f5f5
+        }
+
+        tbody tr {
+            font-family: OpenSans-Regular;
+            font-size: 15px;
+            color: gray;
+            line-height: 1.2;
+            font-weight: unset
+        }
+
+            tbody tr:hover {
+                color: #555;
+                background-color: #f5f5f5;
+            }
+
+        @media screen and (max-width: 992px) {
+            table {
+                display: block
+            }
+
+                table > *, table tr, table td, table th {
+                    display: block
+                }
+
+                table thead {
+                    display: none
+                }
+
+                table tbody tr {
+                    height: auto;
+                    padding: 37px 0
+                }
+
+                    table tbody tr td {
+                        padding-left: 40% !important;
+                        margin-bottom: 24px
+                    }
+
+                        table tbody tr td:last-child {
+                            margin-bottom: 0
+                        }
+
+                        table tbody tr td:before {
+                            font-family: OpenSans-Regular;
+                            font-size: 14px;
+                            color: #999;
+                            line-height: 1.2;
+                            font-weight: unset;
+                            position: absolute;
+                            width: 40%;
+                            left: 30px;
+                            top: 0
+                        }
+
+            .column4, .column5, .column6 {
+            }
+
+            .column0 .column4, .column5, .column6, .column1, .column2, .column3 {
+                width: 100%;
+                text-align: left;
+            }
+
+            tbody tr {
+                font-size: 14px;
+                padding-top: 5px;
+                padding-bottom: 5px;
+            }
+        }
+
+        button:disabled,
+        button[disabled] {
+            border: 1px solid #999999;
+            background-color: #cccccc;
+            color: #666666;
+        }
+
+        .img_logout{
+            margin-top: 2px;
+        }
+
+        .searchInput {
+            outline: 1px solid #ea4c88;
+            border-radius: 0.25rem;
+            padding: 0.85rem;
+            width: 125px;
+            font-weight: 700;
+        }
+
+        .printIcon {
+            width: 24px;
+            height: 24px;
+        }
+        .print {
+            padding: 10px ;
+            position: absolute;
+            margin-left: 5px;
+            top:  25px;
+        }
+    </style>
+</head>
+<body>
+    <section id="login_form">
+        <body class="align">
+            <div class="grid">
+                <form action="#" method="#" class="form login">
+                    <div class="form__field">
+                        <label for="login__username"><svg class="icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#user"></use></svg><span class="hidden">Username</span></label>
+                        <input id="login__username" type="text" name="username" class="form__input logLogin" placeholder="Username" required>
+                    </div>
+                    <div class="form__field">
+                        <label for="login__password"><svg class="icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#lock"></use></svg><span class="hidden">Password</span></label>
+                        <input id="login__password" type="password" name="password" class="form__input logPass" placeholder="Password" required>
+                    </div>
+                    <div class="form__field">
+                        <input type="button" value="Sign In" onclick="login()">
+                    </div>
+                </form>
+                <p class="text--center">Not a member? <a href="#" onclick="toRegistration();return false;">Sign up now</a> <svg class="icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="assets/images/icons.svg#arrow-right"></use></svg></p>
+                <p class="text--center">Not for long? <a href="#" onclick="asAGuest();return false;">Continue as a guest</a> <svg class="icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="assets/images/icons.svg#arrow-right"></use></svg></p>
+            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" class="icons"><symbol id="arrow-right" viewbox="0 0 1792 1792"><path d="M1600 960q0 54-37 91l-651 651q-39 37-91 37-51 0-90-37l-75-75q-38-38-38-91t38-91l293-293H245q-52 0-84.5-37.5T128 1024V896q0-53 32.5-90.5T245 768h704L656 474q-38-36-38-90t38-90l75-75q38-38 90-38 53 0 91 38l651 651q37 35 37 90z" /></symbol><symbol id="lock" viewbox="0 0 1792 1792"><path d="M640 768h512V576q0-106-75-181t-181-75-181 75-75 181v192zm832 96v576q0 40-28 68t-68 28H416q-40 0-68-28t-28-68V864q0-40 28-68t68-28h32V576q0-184 132-316t316-132 316 132 132 316v192h32q40 0 68 28t28 68z" /></symbol><symbol id="user" viewbox="0 0 1792 1792"><path d="M1600 1405q0 120-73 189.5t-194 69.5H459q-121 0-194-69.5T192 1405q0-53 3.5-103.5t14-109T236 1084t43-97.5 62-81 85.5-53.5T538 832q9 0 42 21.5t74.5 48 108 48T896 971t133.5-21.5 108-48 74.5-48 42-21.5q61 0 111.5 20t85.5 53.5 62 81 43 97.5 26.5 108.5 14 109 3.5 103.5zm-320-893q0 159-112.5 271.5T896 896 624.5 783.5 512 512t112.5-271.5T896 128t271.5 112.5T1280 512z" /></symbol></svg>
+        </body>
+    </section>
+
+    <section id="registration_form">
+        <body class="align">
+            <div class="grid">
+                <form action="#" method="#" class="form login">
+                    <div class="form__field">
+                        <label for="login__username"><svg class="icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#user"></use></svg><span class="hidden">Username</span></label>
+                        <input id="login__username" type="text" name="username" class="form__input regLogin" placeholder="Username" required>
+                    </div>
+                    <div class="form__field">
+                        <label for="login__password"><svg class="icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#lock"></use></svg><span class="hidden">Password</span></label>
+                        <input id="login__password" type="password" name="password" class="form__input regPass" placeholder="Password" required>
+                    </div>
+                    <div class="form__field">
+                        <label for="login__password"><svg class="icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#lock"></use></svg><span class="hidden">Password</span></label>
+                        <input id="login__password" type="password" name="password" class="form__input repeatPassword" placeholder="Repeat password" required>
+                    </div>
+                    <div class="form__field">
+                        <input type="button" value="Sign Up" onclick="registrate()">
+                    </div>
+                </form>
+                <p class="text--center">You are a member? <a href="#" onclick="toLogin();return false;">Login</a> <svg class="icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="assets/images/icons.svg#arrow-right"></use></svg></p>
+                <p class="text--center">Not for long? <a href="#" onclick="asAGuest();return false;">Continue as a guest</a> <svg class="icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="assets/images/icons.svg#arrow-right"></use></svg></p>
+            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" class="icons"><symbol id="arrow-right" viewbox="0 0 1792 1792"><path d="M1600 960q0 54-37 91l-651 651q-39 37-91 37-51 0-90-37l-75-75q-38-38-38-91t38-91l293-293H245q-52 0-84.5-37.5T128 1024V896q0-53 32.5-90.5T245 768h704L656 474q-38-36-38-90t38-90l75-75q38-38 90-38 53 0 91 38l651 651q37 35 37 90z" /></symbol><symbol id="lock" viewbox="0 0 1792 1792"><path d="M640 768h512V576q0-106-75-181t-181-75-181 75-75 181v192zm832 96v576q0 40-28 68t-68 28H416q-40 0-68-28t-28-68V864q0-40 28-68t68-28h32V576q0-184 132-316t316-132 316 132 132 316v192h32q40 0 68 28t28 68z" /></symbol><symbol id="user" viewbox="0 0 1792 1792"><path d="M1600 1405q0 120-73 189.5t-194 69.5H459q-121 0-194-69.5T192 1405q0-53 3.5-103.5t14-109T236 1084t43-97.5 62-81 85.5-53.5T538 832q9 0 42 21.5t74.5 48 108 48T896 971t133.5-21.5 108-48 74.5-48 42-21.5q61 0 111.5 20t85.5 53.5 62 81 43 97.5 26.5 108.5 14 109 3.5 103.5zm-320-893q0 159-112.5 271.5T896 896 624.5 783.5 512 512t112.5-271.5T896 128t271.5 112.5T1280 512z" /></symbol></svg>
+        </body>
+    </section>
+
+    <section id="main_app">
+        <div class="wrapper">
+            <div class="tabs">
+                <div class="tab">
+                    <input type="radio" name="css-tabs" id="tab-1" checked class="tab-switch">
+                    <label for="tab-1" class="tab-label">Змагання</label>
+                    <div class="tab-content">
+                        <button id="newWindowButton" class="first_to_left addButton" onclick="rowAction('змагання','add')">Добавити рядок</button>
+                        <button id="newWindowButton" class="delButton" onclick="rowAction('змагання','del')">Видалення рядку</button>
+                        <button id="newWindowButton" class="updButton" onclick="rowAction('змагання','upd')">Змінення рядку</button>
+                        <button id="newWindowButton" onclick="reloadTables()">Перезавантажити таблиці</button>
+                        <input type="text" name="search" placeholder="Пошук..." class="searchInput" value="" />
+                        <button id="newWindowButton" onclick="searchBy('змагання')"> <img src="searchIcon.png" alt="searchIcon" width="12.5" height="12.5" /></button>
+                        <button id="newWindowButton" class="print" onclick="print('змагання')"> <img src="printIcon.png" alt="printIcon" class="printIcon" /></button>
+                        <div class="container-table100">
+                            <div class="wrap-table100">
+                                <div class="table100">
+                                    <table>
+                                        <thead id="table_head-змагання">
+                                            <tr class="table100-head" id="tr-змагання">
+                                            </tr>
+                                        </thead>
+                                        <tbody id="table_body-змагання">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="tab">
+                    <input type="radio" name="css-tabs" id="tab-2" class="tab-switch">
+                    <label for="tab-2" class="tab-label">Матчі</label>
+                    <div class="tab-content">
+                        <button id="newWindowButton" class="first_to_left addButton" onclick="rowAction('матч','add')">Добавити рядок</button>
+                        <button id="newWindowButton" class="delButton" onclick="rowAction('матч','del')">Видалення рядку</button>
+                        <button id="newWindowButton" class="updButton" onclick="rowAction('матч','upd')">Змінення рядку</button>
+                        <button id="newWindowButton" onclick="reloadTables()">Перезавантажити таблиці</button>
+                        <input type="text" name="search" placeholder="Пошук..." class="searchInput" value="" />
+                        <button id="newWindowButton" onclick="searchBy('матч')"> <img src="searchIcon.png" alt="searchIcon" width="12.5" height="12.5" /></button>
+                        <button id="newWindowButton" class="print" onclick="print('матч')"> <img src="printIcon.png" alt="printIcon" class="printIcon" /></button>
+                        <div class="container-table100">
+                            <div class="wrap-table100">
+                                <div class="table100">
+                                    <table>
+                                        <thead id="table_head-матч">
+                                            <tr class="table100-head" id="tr-матч">
+                                            </tr>
+                                        </thead>
+                                        <tbody id="table_body-матч">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab">
+                    <input type="radio" name="css-tabs" id="tab-3" class="tab-switch">
+                    <label for="tab-3" class="tab-label">Голи</label>
+                    <div class="tab-content">
+                        <button id="newWindowButton" class="first_to_left addButton" onclick="rowAction('гол','add')">Добавити рядок</button>
+                        <button id="newWindowButton" class="delButton" onclick="rowAction('гол','del')">Видалення рядку</button>
+                        <button id="newWindowButton" class="updButton" onclick="rowAction('гол','upd')">Змінення рядку</button>
+                        <button id="newWindowButton" onclick="reloadTables()">Перезавантажити таблиці</button>
+                        <input type="text" name="search" placeholder="Пошук..." class="searchInput" value="" />
+                        <button id="newWindowButton" onclick="searchBy('гол')"> <img src="searchIcon.png" alt="searchIcon" width="12.5" height="12.5" /></button>
+                        <button id="newWindowButton" class="print" onclick="print('гол')"> <img src="printIcon.png" alt="printIcon" class="printIcon" /></button>
+                        <div class="container-table100">
+                            <div class="wrap-table100">
+                                <div class="table100">
+                                    <table>
+                                        <thead id="table_head-гол">
+                                            <tr class="table100-head" id="tr-гол">
+                                            </tr>
+                                        </thead>
+                                        <tbody id="table_body-гол">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab">
+                    <input type="radio" name="css-tabs" id="tab-4" class="tab-switch">
+                    <label for="tab-4" class="tab-label">Команди</label>
+                    <div class="tab-content">
+                        <button id="newWindowButton" class="first_to_left addButton" onclick="rowAction('команда','add')">Добавити рядок</button>
+                        <button id="newWindowButton" class="delButton" onclick="rowAction('команда','del')">Видалення рядку</button>
+                        <button id="newWindowButton" class="updButton" onclick="rowAction('команда','upd')">Змінення рядку</button>
+                        <button id="newWindowButton" onclick="reloadTables()">Перезавантажити таблиці</button>
+                        <input type="text" name="search" placeholder="Пошук..." class="searchInput" value="" />
+                        <button id="newWindowButton" onclick="searchBy('команда')"> <img src="searchIcon.png" alt="searchIcon" width="12.5" height="12.5" /></button>
+                        <button id="newWindowButton" class="print" onclick="print('команда')"> <img src="printIcon.png" alt="printIcon" class="printIcon" /></button>
+                        <div class="container-table100">
+                            <div class="wrap-table100">
+                                <div class="table100">
+                                    <table>
+                                        <thead id="table_head-команда">
+                                            <tr class="table100-head" id="tr-команда">
+                                            </tr>
+                                        </thead>
+                                        <tbody id="table_body-команда">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab">
+                    <input type="radio" name="css-tabs" id="tab-5" class="tab-switch">
+                    <label for="tab-5" class="tab-label">Тренери</label>
+                    <div class="tab-content">
+                        <button id="newWindowButton" class="first_to_left addButton" onclick="rowAction('тренер','add')">Добавити рядок</button>
+                        <button id="newWindowButton" class="delButton" onclick="rowAction('тренер','del')">Видалення рядку</button>
+                        <button id="newWindowButton" class="updButton" onclick="rowAction('тренер','upd')">Змінення рядку</button>
+                        <button id="newWindowButton" onclick="reloadTables()">Перезавантажити таблиці</button>
+                        <input type="text" name="search" placeholder="Пошук..." class="searchInput" value="" />
+                        <button id="newWindowButton" onclick="searchBy('тренер')"> <img src="searchIcon.png" alt="searchIcon" width="12.5" height="12.5" /></button>
+                        <button id="newWindowButton" class="print" onclick="print('тренер')"> <img src="printIcon.png" alt="printIcon" class="printIcon" /></button>
+                        <div class="container-table100">
+                            <div class="wrap-table100">
+                                <div class="table100">
+                                    <table>
+                                        <thead id="table_head-тренер">
+                                            <tr class="table100-head" id="tr-тренер">
+                                            </tr>
+                                        </thead>
+                                        <tbody id="table_body-тренер">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab">
+                    <input type="radio" name="css-tabs" id="tab-6" class="tab-switch">
+                    <label for="tab-6" class="tab-label">Спортсмени</label>
+                    <div class="tab-content">
+                        <button id="newWindowButton" class="first_to_left addButton" onclick="rowAction('спортсмен','add')">Добавити рядок</button>
+                        <button id="newWindowButton" class="delButton" onclick="rowAction('спортсмен','del')">Видалення рядку</button>
+                        <button id="newWindowButton" class="updButton" onclick="rowAction('спортсмен','upd')">Змінення рядку</button>
+                        <button id="newWindowButton" onclick="reloadTables()">Перезавантажити таблиці</button>
+                        <input type="text" name="search" placeholder="Пошук..." class="searchInput" value="" />
+                        <button id="newWindowButton" onclick="searchBy('спортсмен')"> <img src="searchIcon.png" alt="searchIcon" width="12.5" height="12.5" /></button>
+                        <button id="newWindowButton" class="print" onclick="print('спортсмен')"> <img src="printIcon.png" alt="printIcon" class="printIcon" /></button>
+                        <div class="container-table100">
+                            <div class="wrap-table100">
+                                <div class="table100">
+                                    <table>
+                                        <thead id="table_head-спортсмен">
+                                            <tr class="table100-head" id="tr-спортсмен">
+                                            </tr>
+                                        </thead>
+                                        <tbody id="table_body-спортсмен">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab">
+                    <input type="radio" name="css-tabs" id="tab-7" class="tab-switch">
+                    <label for="tab-7" class="tab-label">Трансфери</label>
+                    <div class="tab-content">
+                        <button id="newWindowButton" class="first_to_left addButton" onclick="rowAction('трансфер','add')">Добавити рядок</button>
+                        <button id="newWindowButton" class="delButton" onclick="rowAction('трансфер','del')">Видалення рядку</button>
+                        <button id="newWindowButton" class="updButton" onclick="rowAction('трансфер','upd')">Змінення рядку</button>
+                        <button id="newWindowButton" onclick="reloadTables()">Перезавантажити таблиці</button>
+                        <input type="text" name="search" placeholder="Пошук..." class="searchInput" value="" />
+                        <button id="newWindowButton" onclick="searchBy('трансфер')"> <img src="searchIcon.png" alt="searchIcon" width="12.5" height="12.5" /></button>
+                        <button id="newWindowButton" class="print" onclick="print('трансфер')"> <img src="printIcon.png" alt="printIcon" class="printIcon" /></button>
+                        <div class="container-table100">
+                            <div class="wrap-table100">
+                                <div class="table100">
+                                    <table>
+                                        <thead id="table_head-трансфер">
+                                            <tr class="table100-head" id="tr-трансфер">
+                                            </tr>
+                                        </thead>
+                                        <tbody id="table_body-трансфер">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab">
+                    <input type="radio" name="css-tabs" id="tab-8" class="tab-switch">
+                    <label for="tab-8" class="tab-label">Травми</label>
+                    <div class="tab-content">
+                        <button id="newWindowButton" class="first_to_left addButton" onclick="rowAction('травма','add')">Добавити рядок</button>
+                        <button id="newWindowButton" class="delButton" onclick="rowAction('травма','del')">Видалення рядку</button>
+                        <button id="newWindowButton" class="updButton" onclick="rowAction('травма','upd')">Змінення рядку</button>
+                        <button id="newWindowButton" onclick="reloadTables()">Перезавантажити таблиці</button>
+                        <input type="text" name="search" placeholder="Пошук..." class="searchInput" value="" />
+                        <button id="newWindowButton" onclick="searchBy('травма')"> <img src="searchIcon.png" alt="searchIcon" width="12.5" height="12.5" /></button>
+                        <button id="newWindowButton" class="print" onclick="print('травма')"> <img src="printIcon.png" alt="printIcon" class="printIcon" /></button>
+                        <div class="container-table100">
+                            <div class="wrap-table100">
+                                <div class="table100">
+                                    <table>
+                                        <thead id="table_head-травма">
+                                            <tr class="table100-head" id="tr-травма">
+                                            </tr>
+                                        </thead>
+                                        <tbody id="table_body-травма">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab">
+                    <input type="radio" name="css-tabs" id="tab-9" class="tab-switch">
+                    <label for="tab-9" class="tab-label">Запис тренувань</label>
+                    <div class="tab-content">
+                        <button id="newWindowButton" class="first_to_left addButton" onclick="rowAction('тренеркоманда','add')">Добавити рядок</button>
+                        <button id="newWindowButton" class="delButton" onclick="rowAction('тренеркоманда','del')">Видалення рядку</button>
+                        <button id="newWindowButton" class="updButton" onclick="rowAction('тренеркоманда','upd')">Змінення рядку</button>
+                        <button id="newWindowButton" onclick="reloadTables()">Перезавантажити таблиці</button>
+                        <input type="text" name="search" placeholder="Пошук..." class="searchInput" value="" />
+                        <button id="newWindowButton" onclick="searchBy('тренеркоманда')"> <img src="searchIcon.png" alt="searchIcon" width="12.5" height="12.5" /></button>
+                        <button id="newWindowButton" class="print" onclick="print('тренеркоманда')"> <img src="printIcon.png" alt="printIcon" class="printIcon" /></button>
+                        <div class="container-table100">
+                            <div class="wrap-table100">
+                                <div class="table100">
+                                    <table>
+                                        <thead id="table_head-тренеркоманда">
+                                            <tr class="table100-head" id="tr-тренеркоманда">
+                                            </tr>
+                                        </thead>
+                                        <tbody id="table_body-тренеркоманда">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab">
+                    <input type="radio" name="css-tabs" id="tab-10" class="tab-switch">
+                    <label for="tab-10" class="tab-label">Акаунти</label>
+                    <div class="tab-content">
+                        <button id="newWindowButton" class="first_to_left addButton" onclick="rowAction('user_list','add')">Добавити рядок</button>
+                        <button id="newWindowButton" class="delButton" onclick="rowAction('user_list','del')">Видалення рядку</button>
+                        <button id="newWindowButton" class="updButton" onclick="rowAction('user_list','upd')">Змінення рядку</button>
+                        <button id="newWindowButton" onclick="reloadTables()">Перезавантажити таблиці</button>
+                        <input type="text" name="search" placeholder="Пошук..." class="searchInput" value="" />
+                        <button id="newWindowButton" onclick="searchBy('user_list')"> <img src="searchIcon.png" alt="searchIcon" width="12.5" height="12.5" /></button>
+                        <button id="newWindowButton" class="print" onclick="print('user_list')"> <img src="printIcon.png" alt="printIcon" class="printIcon" /></button>
+                        <div class="container-table100">
+                            <div class="wrap-table100">
+                                <div class="table100">
+                                    <table>
+                                        <thead id="table_head-user_list">
+                                            <tr class="table100-head" id="tr-user_list">
+                                            </tr>
+                                        </thead>
+                                        <tbody id="table_body-user_list">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab">
+                    <input type="radio" name="css-tabs" id="tab-11" class="tab-switch">
+                    <label for="tab-11" class="tab-label">Логи</label>
+                    <div class="tab-content">
+                        <button id="newWindowButton" class="first_to_left addButton" onclick="rowAction('user_actions','add')">Добавити рядок</button>
+                        <button id="newWindowButton" class="delButton" onclick="rowAction('user_actions','del')">Видалення рядку</button>
+                        <button id="newWindowButton" class="updButton" onclick="rowAction('user_actions','upd')">Змінення рядку</button>
+                        <button id="newWindowButton" onclick="reloadTables()">Перезавантажити таблиці</button>
+                        <input type="text" name="search" placeholder="Пошук..." class="searchInput" value="" />
+                        <button id="newWindowButton" onclick="searchBy('user_actions')"> <img src="searchIcon.png" alt="searchIcon" width="12.5" height="12.5" /></button>
+                        <button id="newWindowButton" class="print" onclick="print('user_actions')"> <img src="printIcon.png" alt="printIcon" class="printIcon" /></button>
+                        <div class="container-table100">
+                            <div class="wrap-table100">
+                                <div class="table100">
+                                    <table>
+                                        <thead id="table_head-user_actions">
+                                            <tr class="table100-head" id="tr-user_actions">
+                                            </tr>
+                                        </thead>
+                                        <tbody id="table_body-user_actions">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <img class="img_logout" src="exit_logo.png" alt="Exit" width="38" height="38" onclick="logOut()"/>
+            </div>
+        </div>
+    </section>
+
+</body>
+</html>
+<script src="index.js"></script>

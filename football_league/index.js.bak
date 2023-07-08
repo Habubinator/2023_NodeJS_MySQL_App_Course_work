@@ -1,0 +1,46 @@
+const mysql = require('mysql');
+
+var con = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: "password",
+    database: 'футбольналіга'
+});
+
+con.connect(function (err) {
+    if (err) throw err;
+    console.log("Connected to db!");
+});
+
+function toRegistration() {
+    document.getElementById("login__username").value = ""
+    document.getElementById("login__password").value = ""
+    document.getElementById("login_form").style.display = "none";
+    document.getElementById("registration_form").style.display = "block";
+}
+
+function toLogin() {
+    document.getElementById("login__username").value = ""
+    document.getElementById("login__password").value = ""
+    document.getElementById("login_form").style.display = "block";
+    document.getElementById("registration_form").style.display = "none";
+}
+
+function login() {
+    let username = document.getElementsByClassName("logLogin")[0].value
+    let password = document.getElementsByClassName("logPass")[0].value
+}
+
+function registrate() {
+    let username = document.getElementsByClassName("regLogin")[0].value
+    let password = document.getElementsByClassName("regPass")[0].value
+    let password2 = document.getElementsByClassName("repeatPassword")[0].value
+}
+
+function asAGuest() {
+
+}
+
+function connectToDataBase() {
+    
+}
