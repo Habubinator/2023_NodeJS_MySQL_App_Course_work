@@ -1,25 +1,11 @@
-const { app } = require('electron/main');
 const mysql = require('mysql');
-const { BrowserWindow, remote, ipcRenderer } = require('electron');
 var user_id = "NULL";
-var extrawindow;
 var con;
 var tablerows = 0;
 var tempsqlargs = '';
 var tempsqlstring = '';
-let headtblvals = [
-    ["змагання", ["Номер Змагання", "Назва", "Дата закінчення", "Дата початку", "Місце", "Опис"]],
-    ["матч", ["Номер Матчу", "Номер Змагання", "Дата проведення", "Час проведення", "Номер туру", "Результат матчу"]],
-    ["гол", ["Номер Голу", "Номер Матчу", "Хвилина гри", "Опис гола", "Номер команди гравця"]],
-    ["команда", ["Номер Команди", "Назва команди", "Рік заснування", "Країна", "Місто", "Кількість перемог", "Кількість поразок"]],
-    ["тренер", ["Номер Тренера", "ПІБ Тренера", "Країна", "Кількість перемог", "Кількість поразок"]],
-    ["спортсмен", ["Номер Спортсмена", "ПІБ Спортсмена", "Дата народження", "Країна"]],
-    ["трансфер", ["Номер Трансферу", "Номер попередньої команди", "Номер теперішьої команди", "Номер гравця"]],
-    ["травма", ["Номер травми", "Номер спортсмена", "Опис травми", "Дата отримання травми"]],
-    ["тренеркоманда", ["Номер зборів", "Номер тренера", "Номер команди", "Дата початку навчання команди", "Дата кінця навчання команди"]],
-    ["user_list", ["Номер користувача", "Логін", "Пароль", "Модифікатор доступу"]],
-    ["user_actions", ["Номер логу", "Номер Користувача", "Дія користувача", "Час логу"]],
-    ]
+const config = require("./tables-config.json")
+let headtblvals = config.table_data
 let orderBy = 1;
 asc_desc = "asc"
 
@@ -233,25 +219,27 @@ async function checkMainFile() {
 }
 
 function toRegistration() {
-    document.getElementById("login__username").value = ""
-    document.getElementById("login__password").value = ""
-    document.getElementById("login_form").style.display = "none";
+    resetLoginForm();
     document.getElementById("registration_form").style.display = "block";
 }
 
 function toLogin() {
-    document.getElementById("login__username").value = ""
-    document.getElementById("login__password").value = ""
+    resetLoginForm();
     document.getElementById("login_form").style.display = "block";
     document.getElementById("registration_form").style.display = "none";
 }
 
 function logOut() {
     document.getElementById("main_app").style.display = "none";
-    toLogin()
+    toLogin();
     user_id = "NULL";
-
 }
+
+function resetLoginForm() {
+    document.getElementById("login__username").value = "";
+    document.getElementById("login__password").value = "";
+}
+
 
 function login() {
     let username = document.getElementsByClassName("logLogin")[0].value
@@ -337,24 +325,11 @@ async function registrate() {
 }
 
 function asAGuest() {
-    try {
-        dataLogUserActions("NULL", 'Guest logged in')
-        user_id = "NULL";
-        app_connect(false)   
-    }
-    catch (error) {
-        console.error('Ошибка входа:', error);
-    }
+    dataLogUserActions("NULL", 'Guest logged in');
+    user_id = "NULL";
+    app_connect(false);
 }
 
-//await waitOneSecond();
-function waitOneSecond() {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve();
-        }, 1000);
-    });
-}
 
 async function app_connect(isLogged) {
     document.getElementById("login_form").style.display = "none";
@@ -364,8 +339,8 @@ async function app_connect(isLogged) {
     let getUserStatus = new Promise((resolve, reject) => {
         con.query("SELECT * FROM user_list", function (err, result, fields) {
             if (err) {
-                throw err
                 resolve(false)
+                throw err
             }
             if (isLogged) {
                 for (i = 0; i < document.getElementsByClassName("delButton").length; i++) {
@@ -422,19 +397,17 @@ async function app_connect(isLogged) {
 }
 
 function dataLogUserActions(id_of_user, action_text) {
-    try {
-        con.query(
-            `INSERT INTO user_actions (user_id, user_action)
-                     VALUES (${id_of_user}, '${action_text}')`,
-            function (err, result, fields) {
-                if (err) throw err;
-                console.log('Запись в лог успешно добавлена');
+    con.query(
+        `INSERT INTO user_actions (user_id, user_action)
+         VALUES (${id_of_user}, '${action_text}')`,
+        (err, result, fields) => {
+            if (err) {
+                console.error('Помилка логу:', err);
+            } else {
+                console.log('Запис в лог успішно додано');
             }
-        );
-    }
-    catch (error) {
-        console.error('Ошибка лога:', error);
-    }
+        }
+    );
 }
 
 function rowAction(table_name, typeOfAction) { 
@@ -536,36 +509,21 @@ async function extrawin_submit(typeOfAction) {
 }
 
 function goToSqlString(str) {
-    if (/^\d+$/.test(str)) {
-        return str;
-    } else {
-        return "'" + str + "'";
-    }
+    return /^\d+$/.test(str) ? str : `'${str}'`;
 }
+
 
 async function extrawin_onChange(typeAction) {
-    var params = new URLSearchParams(window.location.search);
-    var table_name = params.get("table_name");
+    const params = new URLSearchParams(window.location.search);
+    const table_name = params.get("table_name");
+    const inputType = document.getElementById(table_name).value.includes("Дата") ? "date" : "text";
+    const inputId = typeAction ? "deleteVal" : "updVal";
 
-    if (typeAction) {
-        let inputType = "text"
-        if (document.getElementById(table_name).value.includes("Дата")) {
-            inputType = "date"
-        }
-        input = document.getElementById("deleteVal")
-        input.setAttribute("value", "");
-        input.setAttribute("type", inputType);
-    } else {
-        let inputType = "text"
-        if (document.getElementById(table_name).value.includes("Дата")) {
-            inputType = "date"
-        }
-        input = document.getElementById("updVal")
-        input.setAttribute("value", "");
-        input.setAttribute("type", inputType);
-    }
-    
+    const input = document.getElementById(inputId);
+    input.setAttribute("value", "");
+    input.setAttribute("type", inputType);
 }
+
 
 function reloadTables() {
     try {
@@ -687,14 +645,10 @@ function reloadTables() {
 
 function placeOrderBy(pos) {
     if (orderBy == pos + 1) {
-        if (asc_desc == "asc") {
-            asc_desc = "desc"
-        } else {
-            asc_desc = "asc"
-        }
+        asc_desc = asc_desc === "asc" ? "desc" : "asc";
     } else {
-        orderBy = pos + 1
-    }   
+        orderBy = pos + 1;
+    }
 }
 
 function defaultOrder() {
@@ -703,88 +657,66 @@ function defaultOrder() {
 }
 
 function searchBy(temp_table_name) {
+    const table_name_like = config.table_name_like;
 
-    var table_name_like = [ ["змагання", "НазваЗмагання"],
-                            ["матч", "РезультатМатчу"],
-                            ["гол", "ОписГола"],
-                            ["команда", "НазваКоманди"],
-                            ["тренер", "ПІБТренера",],
-                            ["спортсмен", "ПІБСпортсмена",],
-                            ["трансфер", "IDГравця"],
-                            ["травма", "ОписТравми"],
-                            ["тренеркоманда", "Номер команди"],
-                            ["user_list", "user_login"],
-                            ["user_actions","user_action"]
-    ]
-
-    let pos;
-    let like;
-    for (var i = 0; i < headtblvals.length; i++) {
-        if (headtblvals[i][0] == temp_table_name) {
-            like = document.getElementById("searchInput" + (i + 1)).value
-            pos = i
-        }
+    const pos = headtblvals.findIndex(([name]) => name === temp_table_name);
+    if (pos === -1) {
+        console.error('Елемент з іменем ' + temp_table_name + ' не знайдений.');
+        return;
     }
 
-    const getTableData = new Promise((resolve, reject) => {
-        con.query(
-            `SELECT * FROM ${temp_table_name} where ${table_name_like[pos][1]} like "%${like}%" order by ${orderBy} ${asc_desc}`,
-            function (err, result, fields) {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(result);
-                }
+    const like = document.getElementById("searchInput" + (pos + 1)).value;
+
+    con.query(
+        `SELECT * FROM ${temp_table_name} WHERE ${table_name_like[pos][1]} LIKE "%${like}%" ORDER BY ${orderBy} ${asc_desc}`,
+        function (err, result, fields) {
+            if (err) {
+                console.error(err);
+                return;
             }
-        );
-    });
 
-    let table_body = document.getElementById("table_body-" + temp_table_name);
-    table_body.innerHTML = '';
+            const table_body = document.getElementById("table_body-" + temp_table_name);
+            table_body.innerHTML = '';
 
-    getTableData.then((data) => {
-        for (let k = 0; k < data.length; k++) {
-            let tr = document.createElement("tr");
-            table_body.appendChild(tr);
-            rowData = Object.values(data[k]);
-            for (let h = 0; h < rowData.length; h++) {
-                let td = document.createElement("td");
-                td.setAttribute("class", "column" + h);
-                tr.appendChild(td);
-                rowString = rowData[h] + " "
-                if (rowString.includes("GMT") && temp_table_name != "user_actions") {
-                    rowData[h] = rowString.substring(0, 15)
-                }
-                if (temp_table_name == "user_actions") {
-                    if (rowData[h] == null) {
-                        rowData[h] = "Guest"
+            for (const row of result) {
+                const tr = document.createElement("tr");
+                table_body.appendChild(tr);
+
+                for (let i = 0; i < Object.values(row).length; i++) {
+                    const td = document.createElement("td");
+                    td.setAttribute("class", "column" + i);
+                    tr.appendChild(td);
+                    let rowString = Object.values(row)[i] + " ";
+                    if (rowString.includes("GMT") && temp_table_name !== "user_actions") {
+                        rowString = rowString.substring(0, 15);
                     }
+                    if (temp_table_name === "user_actions" && Object.values(row)[i] === null) {
+                        Object.values(row)[i] = "Guest";
+                    }
+                    td.innerHTML = Object.values(row)[i];
                 }
-                td.innerHTML = rowData[h];
             }
         }
-    });
+    );
 }
 
+
 function printElement(temp_table_name) {
-    let elementToPrint
-    for (var i = 0; i < headtblvals.length; i++) {
-        if (headtblvals[i][0] == temp_table_name) {
-            elementToPrint = document.getElementsByClassName("print")[i];
-        }
-    }
+    const elementToPrint = Array.from(headtblvals).find(([name]) => name === temp_table_name);
     if (elementToPrint) {
+        const [, element] = elementToPrint;
         const printWindow = window.open('', '_blank');
         printWindow.document.write('<html><head><title>Print</title></head><body>');
-        printWindow.document.write(elementToPrint.innerHTML);
+        printWindow.document.write(document.getElementsByClassName("print")[headtblvals.indexOf(elementToPrint)].innerHTML);
         printWindow.document.write('</body></html>');
         printWindow.document.close();
         printWindow.print();
         printWindow.close();
     } else {
-        console.error('Элемент с ID ' + elementId + ' не найден.');
+        console.error('Елемент з іменем ' + temp_table_name + ' не знайдений.');
     }
 }
+
 
 
 checkMainFile();
